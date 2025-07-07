@@ -1,12 +1,35 @@
-# React + Vite
+# Plataforma de Monitoreo de Operativos Policiales en Tiempo Real
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este proyecto es una aplicación web que simula la detección y monitoreo de operativos policiales cercanos al usuario, utilizando geolocalización y notificaciones en tiempo real.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Características
 
-## Expanding the ESLint configuration
+- Visualización en mapa de la ubicación del usuario y operativos policiales activos.
+- Agregado automático de operativos cada 30 segundos para simular detección por IA.
+- Notificaciones del navegador cuando se detecta un nuevo operativo.
+- Posibilidad de cerrar operativos para limpiar el mapa.
+- Panel lateral con listado de operativos activos y botón para centrarse en la ubicación del usuario.
+- Guardado de operativos en `localStorage` para mantener el estado entre sesiones.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Tecnologías
+
+- React
+- React Leaflet (mapas interactivos)
+- Leaflet (librería de mapas)
+- React Icons
+- Tailwind CSS (estilos)
+- API de geocodificación inversa de OpenStreetMap (Nominatim)
+
+---
+
+## Instalación y ejecución
+
+1. Clonar el repositorio
+
+```bash
+git clone https://github.com/tu-usuario/tu-repo.git
+cd tu-repo

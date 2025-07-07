@@ -1,53 +1,49 @@
-import { useState } from 'react'
+import { useState } from "react";
+import Sidebar from "./SideBar";
 
-export default function Navbar() {
-  const [open, setOpen] = useState(false)
+export default function Navbar({ calles }) {
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-gray-800 p-4">
-      <div className="max-w-screen-xl mx-auto flex items-center justify-between">
-        {/* Logo o nombre */}
-        <div className="text-white text-xl font-bold">Radar Policial</div>
+    <>
+      <nav className="fixed top-0 left-0 right-0 bg-gray-800 p-4 z-50 flex justify-between items-center">
+        <div className="text-white font-bold text-xl">Radar Policial</div>
 
-        {/* Menú en escritorio */}
-        <div className="hidden md:flex space-x-6">
-          <a href="#about" className="text-white hover:text-blue-500">Acerca de</a>
-          <a href="#user" className="text-white hover:text-blue-500">Usuario</a>
-          <a href="#log" className="text-white hover:text-blue-500">Log</a>
-        </div>
-
-        {/* Menú hamburguesa */}
-        <div className="md:hidden flex items-center">
-          <button
-            className="text-white"
-            onClick={() => setOpen(!open)}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
+        {/* Botón hamburguesa */}
+        <button
+          className="md:hidden text-white"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label={menuOpen ? "Cerrar menú operativos" : "Abrir menú operativos"}
+        >
+          {menuOpen ? (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
-          </button>
-        </div>
-      </div>
+          ) : (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          )}
+        </button>
 
-      {/* Menú desplegable en móvil */}
-      {open && (
-        <div className="md:hidden bg-gray-700 p-4">
-          <a href="#about" className="block text-white py-2 hover:text-blue-500">Acerca de</a>
-          <a href="#user" className="block text-white py-2 hover:text-blue-500">Usuario</a>
-          <a href="#log" className="block text-white py-2 hover:text-blue-500">Log</a>
+        {/* Menú desktop */}
+        <div className="hidden md:flex space-x-6 text-white max-w-lg overflow-x-auto">
+          {calles.length === 0 ? (
+            <span>No hay operativos</span>
+          ) : (
+            calles.map((direccion, i) => (
+              <span key={i} title={direccion} className="truncate max-w-xs">
+                {direccion}
+              </span>
+            ))
+          )}
         </div>
+      </nav>
+
+      {/* Sidebar móvil */}
+      {menuOpen && (
+        <Sidebar calles={calles} onClose={() => setMenuOpen(false)} />
       )}
-    </nav>
-  )
+    </>
+  );
 }
