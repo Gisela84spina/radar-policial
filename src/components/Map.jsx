@@ -12,7 +12,7 @@ import 'leaflet/dist/leaflet.css';
 import ReactDOMServer from "react-dom/server";
 import { FaMapMarkerAlt, FaUserShield } from "react-icons/fa";
 
-
+// Función para crear íconos con React Icons
 const createReactIcon = (icon, color, extraClass = "") =>
   L.divIcon({
     html: ReactDOMServer.renderToString(
@@ -25,6 +25,7 @@ const createReactIcon = (icon, color, extraClass = "") =>
     iconAnchor: [15, 42],
   });
 
+// Botón para centrar el mapa en tu ubicación
 const CenterMapButton = ({ center }) => {
   const map = useMap();
   return (
@@ -38,7 +39,8 @@ const CenterMapButton = ({ center }) => {
   );
 };
 
-const Map = ({ userPosition, operativos, addOperativo, handleCloseOperativo }) => {
+// Componente principal del mapa
+const Map = ({ userPosition, operativos, addOperativoEnUbicacionActual, handleCloseOperativo }) => {
   return (
     <>
       <div className="relative rounded-xl shadow-lg border overflow-hidden z-10 max-w-screen-lg mx-auto px-4">
@@ -48,10 +50,12 @@ const Map = ({ userPosition, operativos, addOperativo, handleCloseOperativo }) =
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
 
+          {/* Marker de la ubicación actual */}
           <Marker position={userPosition} icon={createReactIcon(<FaMapMarkerAlt />, "blue")}>
             <Popup>Estás acá</Popup>
           </Marker>
 
+          {/* Markers de los operativos activos */}
           {operativos.map((op) => (
             <Marker
               key={op.id}
@@ -73,16 +77,18 @@ const Map = ({ userPosition, operativos, addOperativo, handleCloseOperativo }) =
             </Marker>
           ))}
 
+          {/* Botón para centrar mapa */}
           <CenterMapButton center={userPosition} />
         </MapContainer>
       </div>
 
+      {/* Botón para agregar operativo en ubicación actual */}
       <button
-        onClick={addOperativo}
+        onClick={addOperativoEnUbicacionActual}
         className="fixed bottom-36 right-6 bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-700 transition-all z-[1000]"
-        aria-label="Simular operativo policial"
+        aria-label="Agregar operativo en mi ubicación"
       >
-        Simular Operativo
+        Agregar Operativo
       </button>
     </>
   );

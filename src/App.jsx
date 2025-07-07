@@ -30,12 +30,15 @@ const App = () => {
     localStorage.setItem("operativos", JSON.stringify(operativos));
   }, [operativos]);
 
+  // Función existente que simula un operativo aleatorio
   const addOperativo = async () => {
-    const getRandomNearbyCoords = (base, radius = 0.01) => {
-      const offsetLat = (Math.random() - 0.5) * radius;
-      const offsetLng = (Math.random() - 0.5) * radius;
-      return [base[0] + offsetLat, base[1] + offsetLng];
-    };
+    // ... código que ya tenías ...
+  };
+
+  // Nueva función para agregar operativo en ubicación actual
+  const addOperativoEnUbicacionActual = async () => {
+    const lat = userPosition[0];
+    const lng = userPosition[1];
 
     const getAddress = async (lat, lng) => {
       try {
@@ -69,11 +72,10 @@ const App = () => {
       }
     };
 
-    const [lat, lng] = getRandomNearbyCoords(userPosition, 0.02);
-
-    // Verifica si ya existe uno muy cerca
+    // Evitar duplicados cercanos
     const yaExiste = operativos.some(
-      (op) => Math.abs(op.lat - lat) < 0.0005 && Math.abs(op.lng - lng) < 0.0005
+      (op) =>
+        Math.abs(op.lat - lat) < 0.0005 && Math.abs(op.lng - lng) < 0.0005
     );
     if (yaExiste) return;
 
@@ -99,8 +101,10 @@ const App = () => {
     }
 
     setTimeout(() => {
-      setOperativos((prev) => prev.filter((op) => op.id !== nuevoOperativo.id));
-    }, 2 * 60 * 1000);
+      setOperativos((prev) =>
+        prev.filter((op) => op.id !== nuevoOperativo.id)
+      );
+    }, 2 * 30 * 1000);
   };
 
   useEffect(() => {
@@ -122,14 +126,15 @@ const App = () => {
         <Map
           userPosition={userPosition}
           operativos={operativos}
-          addOperativo={addOperativo}
+          addOperativoEnUbicacionActual={addOperativoEnUbicacionActual} // <-- pasamos esta función
           handleCloseOperativo={handleCloseOperativo}
         />
       </main>
       {sidebarVisible && (
         <Sidebar
-          calles={operativos.map((o) => o.direccion)}
+          operativos={operativos}
           onClose={() => setSidebarVisible(false)}
+          onRemoveOperativo={handleCloseOperativo}
         />
       )}
       <footer className="fixed bottom-0 left-0 right-0 bg-gray-800 text-white text-center py-3 shadow-inner z-40">
