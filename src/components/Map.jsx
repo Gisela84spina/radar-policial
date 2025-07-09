@@ -84,12 +84,13 @@ const Map = ({ userPosition, operativos, addOperativoEnUbicacionActual, handleCl
 
       {/* Botón para agregar operativo en ubicación actual */}
       <button
-        onClick={addOperativoEnUbicacionActual}
-        className="fixed bottom-36 right-6 bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-700 transition-all z-[1000]"
-        aria-label="Agregar operativo en mi ubicación"
-      >
-        Agregar Operativo
+       onClick={addOperativoEnUbicacionActual}
+       className="fixed bottom-36 right-6 bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-700 transition-all z-[1000]"
+       aria-label="Agregar operativo en mi ubicación"
+>
+       Agregar Operativo
       </button>
+
     </>
   );
 };
