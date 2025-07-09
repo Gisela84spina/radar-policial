@@ -8,7 +8,21 @@ const App = () => {
   const [operativos, setOperativos] = useState([]);
   const [userPosition, setUserPosition] = useState([-34.5931, -60.9439]);
 
+  const obtenerDireccion = async (lat, lng) => {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
+      );
+      const data = await response.json();
+      return data.display_name || "Dirección desconocida";
+    } catch (error) {
+      console.error("Error al obtener dirección:", error);
+      return "Dirección desconocida";
+    }
+  };
+  
   // Carga inicial
+  
   useEffect(() => {
     const stored = localStorage.getItem("operativos");
     if (stored) setOperativos(JSON.parse(stored));
@@ -30,15 +44,62 @@ const App = () => {
     localStorage.setItem("operativos", JSON.stringify(operativos));
   }, [operativos]);
 
+  useEffect(() => {
+    const interval = setInterval( async () => {
+      if (!userPosition) return;
+  
+      const lat = userPosition[0] + (Math.random() - 0.5) * 0.01;
+      const lng = userPosition[1] + (Math.random() - 0.5) * 0.01;
+  
+      const direccion = await obtenerDireccion(lat, lng);
+  
+      const nuevoOperativo = {
+        id: Date.now(),
+        lat,
+        lng,
+        direccion,
+        mensaje: "Operativo detectado por IA",
+      };
+     
+  
+      setOperativos((prev) => [...prev, nuevoOperativo]);
+  
+      if (Notification.permission === "granted") {
+        new Notification("Nuevo operativo detectado", {
+          body: direccion,
+        });
+      }
+    }, 30000);
+   
+    const eliminarOperativoInterval = setInterval(() => {
+      setOperativos((prev) => {
+        if (prev.length === 0) return prev;
+        const nuevoArray = [...prev];
+        nuevoArray.shift(); // Elimina el primer elemento (más viejo)
+        return nuevoArray;
+      });
+    }, 35000); // Eliminar cada 35 segundos
+  
+
+    return () => {
+      clearInterval(interval);
+      clearInterval(eliminarOperativoInterval);
+    };
+  }, [userPosition]);
+  
+
   // Agregar operativo en ubicación actual
-  const addOperativo = () => {
+  const addOperativo = async () => {
     if (!userPosition) return;
+ 
+    const [lat, lng] = userPosition;
+    const direccion = await obtenerDireccion(lat, lng)
 
     const nuevoOperativo = {
       id: Date.now(),
-      lat: userPosition[0],
-      lng: userPosition[1],
-      direccion: "Ubicación actual",
+      lat,
+      lng,
+      direccion,
       mensaje: "Operativo generado desde tu ubicación",
     };
 
@@ -46,7 +107,7 @@ const App = () => {
 
     if (Notification.permission === "granted") {
       new Notification("Operativo agregado", {
-        body: "Se detectó un nuevo operativo en tu ubicación.",
+        body: direccion,
       });
     }
   };
