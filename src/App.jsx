@@ -20,12 +20,15 @@ const App = () => {
       return "Dirección desconocida";
     }
   };
-  
-  // Carga inicial
-  
+
+  // Carga inicial de operativos y permisos, y ubicación del usuario
   useEffect(() => {
     const stored = localStorage.getItem("operativos");
     if (stored) setOperativos(JSON.parse(stored));
+
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -33,26 +36,18 @@ const App = () => {
         () => console.warn("Permiso de ubicación denegado o no disponible.")
       );
     }
-
-    if (Notification.permission !== "granted") {
-      Notification.requestPermission();
-    }
   }, []);
 
-  // Guardar operativos en localStorage
+  // Efecto para crear y eliminar operativos periódicamente
   useEffect(() => {
-    localStorage.setItem("operativos", JSON.stringify(operativos));
-  }, [operativos]);
+    if (!userPosition) return;
 
-  useEffect(() => {
-    const interval = setInterval( async () => {
-      if (!userPosition) return;
-  
-      const lat = userPosition[0] + (Math.random() - 0.5) * 0.01;
-      const lng = userPosition[1] + (Math.random() - 0.5) * 0.01;
-  
+    const interval = setInterval(async () => {
+      const lat = userPosition[0] + (Math.random() - 0.5) * 0.05;
+      const lng = userPosition[1] + (Math.random() - 0.5) * 0.05;
+
       const direccion = await obtenerDireccion(lat, lng);
-  
+
       const nuevoOperativo = {
         id: Date.now(),
         lat,
@@ -60,40 +55,37 @@ const App = () => {
         direccion,
         mensaje: "Operativo detectado por IA",
       };
-     
-  
+
       setOperativos((prev) => [...prev, nuevoOperativo]);
-  
+
       if (Notification.permission === "granted") {
         new Notification("Nuevo operativo detectado", {
           body: direccion,
         });
       }
     }, 30000);
-   
+
     const eliminarOperativoInterval = setInterval(() => {
       setOperativos((prev) => {
         if (prev.length === 0) return prev;
         const nuevoArray = [...prev];
-        nuevoArray.shift(); // Elimina el primer elemento (más viejo)
+        nuevoArray.shift();
         return nuevoArray;
       });
-    }, 35000); // Eliminar cada 35 segundos
-  
+    }, 35000);
 
     return () => {
       clearInterval(interval);
       clearInterval(eliminarOperativoInterval);
     };
   }, [userPosition]);
-  
 
-  // Agregar operativo en ubicación actual
+  // Agregar operativo manualmente en la ubicación actual
   const addOperativo = async () => {
     if (!userPosition) return;
- 
+
     const [lat, lng] = userPosition;
-    const direccion = await obtenerDireccion(lat, lng)
+    const direccion = await obtenerDireccion(lat, lng);
 
     const nuevoOperativo = {
       id: Date.now(),
@@ -112,14 +104,13 @@ const App = () => {
     }
   };
 
-  // Quitar operativo por id
+  // Eliminar operativo por id
   const handleCloseOperativo = (id) => {
     setOperativos((prev) => prev.filter((op) => op.id !== id));
   };
 
   return (
     <div className="flex min-h-screen">
-      {/* El sidebar está dentro del contenido principal, debajo del navbar */}
       <div className="flex-1 flex flex-col transition-all duration-300">
         <Navbar
           calles={operativos.map((o) => o.direccion)}
@@ -127,7 +118,6 @@ const App = () => {
           sidebarVisible={sidebarVisible}
         />
 
-        {/* Sidebar fijo debajo del navbar, aparece solo si está visible */}
         {sidebarVisible && (
           <Sidebar
             operativos={operativos}
