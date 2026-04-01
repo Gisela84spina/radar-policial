@@ -1,35 +1,48 @@
 # Plataforma de Monitoreo de Operativos Policiales en Tiempo Real
 
-Este proyecto es una aplicación web que simula la detección y monitoreo de operativos policiales cercanos al usuario, utilizando geolocalización y notificaciones en tiempo real.
+Aplicación web que simula un sistema inteligente de detección de operativos policiales cercanos, utilizando geolocalización, eventos en tiempo real y notificaciones del navegador.
+
+🔗 Demo en vivo: https://filotropo-dentronf.vercel.app/
 
 ---
 
-## Características
+## 🚀 Funcionalidades
 
-- Visualización en mapa de la ubicación del usuario y operativos policiales activos.
-- Agregado automático de operativos cada 30 segundos para simular detección por IA.
-- Notificaciones del navegador cuando se detecta un nuevo operativo.
-- Posibilidad de cerrar operativos para limpiar el mapa.
-- Panel lateral con listado de operativos activos y botón para centrarse en la ubicación del usuario.
-- Guardado de operativos en `localStorage` para mantener el estado entre sesiones.
-
----
-
-## Tecnologías
-
-- React
-- React Leaflet (mapas interactivos)
-- Leaflet (librería de mapas)
-- React Icons
-- Tailwind CSS (estilos)
-- API de geocodificación inversa de OpenStreetMap (Nominatim)
+* Visualización en mapa de la ubicación del usuario y operativos activos.
+* Generación automática de operativos cada 30 segundos (simulación de detección por IA).
+* Notificaciones en tiempo real del navegador.
+* Cierre manual de operativos.
+* Panel lateral con listado dinámico.
+* Persistencia de datos con localStorage.
 
 ---
 
-## Instalación y ejecución
+## 🧠 Desafíos técnicos
 
-1. Clonar el repositorio
+* Manejo de estado en tiempo real en React.
+* Integración de mapas interactivos con React Leaflet.
+* Uso de geolocalización del navegador.
+* Persistencia sin backend.
+* Simulación de eventos asincrónicos (IA).
+
+---
+
+## 🛠️ Tecnologías
+
+* React
+* React Leaflet
+* Leaflet
+* Tailwind CSS
+* React Icons
+* API Nominatim (OpenStreetMap)
+
+---
+
+## ⚙️ Instalación
 
 ```bash
 git clone https://github.com/tu-usuario/tu-repo.git
 cd tu-repo
+npm install
+npm run dev
+```
